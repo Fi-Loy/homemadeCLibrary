@@ -43,7 +43,16 @@ void insert(char* key, double value) {
 //Searches for key in hashmap and returns the value 
 //stored to the value pointer passed.
 //Returns 0 if successful, returns -1 elsewise
-//int search(char* key, double* value){
+int search(char* key, double* value){
+    struct hashBin* walker; 
+
+    for (walker = table[hash(key)]; walker != NULL; walker = walker->next)
+        if(strcmp(walker->key, key) == 0){
+            *value = walker->value;
+            return 0;
+        }
+    return -1;
+}
 //    int index = hash(key);
 //    struct hashBin* hbp = table[index];
 //
@@ -77,7 +86,7 @@ void insert(char* key, double value) {
 //            }
 //}
 
-main() {
+int main() {
     printf("testing the hash function\n");
     char key1[] = "Recipe Name";
     char key2[] = "Grain Matrix";
@@ -86,16 +95,15 @@ main() {
 
     insert("OG", 1.062);
     insert("OG", 1.056);
-    //double result;
-    //
-    //if (search("OG", &result) == 0)
-    //    printf("the value associated with the key %s, is %f\n","OG", result);
-    //else
-    //    printf("key does not exist in the hashmap");
-    //if (search("FG", &result) == 0)
-    //    printf("the value associated with the key %s, is %f\n","OG", result);
-    //else
-    //    printf("key does not exist in the hashmap\n");
-
-    //insert("FG", 1.008);
+    double result;
+    
+    if (search("OG", &result) == 0)
+        printf("the value associated with the key %s, is %f\n","OG", result);
+    else
+        printf("key does not exist in the hashmap");
+    if (search("FG", &result) == 0)
+        printf("the value associated with the key %s, is %f\n","OG", result);
+    else
+        printf("key does not exist in the hashmap\n");
+    insert("FG", 1.008);
 }

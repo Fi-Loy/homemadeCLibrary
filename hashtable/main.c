@@ -9,7 +9,7 @@ static struct hashBin {
     struct hashBin* next;
 };
 
-static struct hashBin table[TABLESIZE];
+static struct hashBin* table[TABLESIZE];
 
 static int hash(char* keyPointer) {
     unsigned int hash = 0;
@@ -26,37 +26,38 @@ static int hash(char* keyPointer) {
 //If an item already exists with the same key,
 //it's value is updated.
 void insert(char* key, double value) {
-    int index = hash(key);
-    struct hashBin* hbp = &table[index];
+    struct hashBin* walker; 
 
-    while (hbp->key != NULL) {
-        if (strcmp(key, hbp->key) == 0)
-            break;
-        hbp->next = malloc(sizeof(struct hashBin));
-        hbp = hbp->next;
-    }
-    hbp->key = key;
-    hbp->value = value;
+    for (walker = table[hash(key)]; walker != NULL; walker = walker->next)
+        if(strcmp(walker->key, key) == 0){
+            walker->value = value;
+            return;
+        }
+    walker = (struct hashBin *) malloc(sizeof(struct hashBin));
+    walker->key = key;
+    walker->value = value;
+    walker->next = table[hash(key)];
+    table[hash(key)] = walker;
 }
 
 //Searches for key in hashmap and returns the value 
 //stored to the value pointer passed.
 //Returns 0 if successful, returns -1 elsewise
-int search(char* key, double* value){
-    int index = hash(key);
-    struct hashBin* hbp = &table[index];
-
-    while (hbp->key != NULL) 
-        if (strcmp(key, hbp->key) == 0){
-            *value = hbp->value;
-            return 0;
-        }
-        else if (hbp->next != NULL)
-            hbp = hbp->next;
-        else
-            break;
-    return -1;
-}
+//int search(char* key, double* value){
+//    int index = hash(key);
+//    struct hashBin* hbp = table[index];
+//
+//    while (hbp->key != NULL) 
+//        if (strcmp(key, hbp->key) == 0){
+//            *value = hbp->value;
+//            return 0;
+//        }
+//        else if (hbp->next != NULL)
+//            hbp = hbp->next;
+//        else
+//            break;
+//    return -1;
+//}
 
 //Finds if a value is associated with the key given 
 //and deletes it. Returns 0 if a value was found,
@@ -85,16 +86,16 @@ main() {
 
     insert("OG", 1.062);
     insert("OG", 1.056);
-    double result;
-    
-    if (search("OG", &result) == 0)
-        printf("the value associated with the key %s, is %f\n","OG", result);
-    else
-        printf("key does not exist in the hashmap");
-    if (search("FG", &result) == 0)
-        printf("the value associated with the key %s, is %f\n","OG", result);
-    else
-        printf("key does not exist in the hashmap\n");
+    //double result;
+    //
+    //if (search("OG", &result) == 0)
+    //    printf("the value associated with the key %s, is %f\n","OG", result);
+    //else
+    //    printf("key does not exist in the hashmap");
+    //if (search("FG", &result) == 0)
+    //    printf("the value associated with the key %s, is %f\n","OG", result);
+    //else
+    //    printf("key does not exist in the hashmap\n");
 
-    insert("FG", 1.008);
+    //insert("FG", 1.008);
 }

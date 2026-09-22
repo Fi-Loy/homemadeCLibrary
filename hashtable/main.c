@@ -53,38 +53,23 @@ int search(char* key, double* value){
         }
     return -1;
 }
-//    int index = hash(key);
-//    struct hashBin* hbp = table[index];
-//
-//    while (hbp->key != NULL) 
-//        if (strcmp(key, hbp->key) == 0){
-//            *value = hbp->value;
-//            return 0;
-//        }
-//        else if (hbp->next != NULL)
-//            hbp = hbp->next;
-//        else
-//            break;
-//    return -1;
-//}
 
 //Finds if a value is associated with the key given 
 //and deletes it. Returns 0 if a value was found,
 //-1 elsewise.
-//int delete(char* key) {
-//    int index = hash(key);
-//    struct hashBin* hbp = &table[index];
-//
-//    while (hbp->key != NULL) 
-//        if (strcmp(key, hbp->key) == 0)
-//            if (hbp->next == NULL) {
-//                hbp->key == NULL;
-//                hbp->value == 0;
-//                return 0;
-//            } else {
-//                *hbp = *(hbp->next);
-//            }
-//}
+int delete(char* key) {
+    struct hashBin** walker; 
+
+    for (walker = &table[hash(key)]; *walker != NULL; walker = &((*walker)->next)){
+        if(strcmp((*walker)->key, key) == 0) {
+            struct hashBin* temp = *walker;
+            *walker = ((*walker)->next);
+            free((void *) temp);
+            return 0;
+        }
+    }
+    return -1;
+}
 
 int main() {
     printf("testing the hash function\n");
@@ -106,4 +91,8 @@ int main() {
     else
         printf("key does not exist in the hashmap\n");
     insert("FG", 1.008);
+    delete("FG");
+    insert("FG", 1.008);
+    delete("OG");
+    delete("FG");
 }
